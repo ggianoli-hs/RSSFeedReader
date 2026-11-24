@@ -18,9 +18,9 @@
 
 **Purpose**: Create the API, UI, and API test project skeletons.
 
-- [ ] T001 [P] Create the .NET 10 ASP.NET Core API project at `backend/RSSFeedReader.Api/RSSFeedReader.Api.csproj`.
-- [ ] T002 [P] Create the standalone .NET 10 Blazor WebAssembly project at `frontend/RSSFeedReader.UI/RSSFeedReader.UI.csproj`.
-- [ ] T003 Create the xUnit test project at `backend/RSSFeedReader.Api.Tests/RSSFeedReader.Api.Tests.csproj`, reference `backend/RSSFeedReader.Api/RSSFeedReader.Api.csproj`, and add the ASP.NET Core test host dependency.
+- [X] T001 [P] Create the .NET 10 ASP.NET Core API project at `backend/RSSFeedReader.Api/RSSFeedReader.Api.csproj`.
+- [X] T002 [P] Create the standalone .NET 10 Blazor WebAssembly project at `frontend/RSSFeedReader.UI/RSSFeedReader.UI.csproj`.
+- [X] T003 Create the xUnit test project at `backend/RSSFeedReader.Api.Tests/RSSFeedReader.Api.Tests.csproj`, reference `backend/RSSFeedReader.Api/RSSFeedReader.Api.csproj`, and add the ASP.NET Core test host dependency.
 
 ---
 
@@ -30,11 +30,11 @@
 
 **⚠️ CRITICAL**: Complete this phase before beginning User Story 1.
 
-- [ ] T004 [P] Configure the API launch profile to bind to the documented loopback address and port `5151` in `backend/RSSFeedReader.Api/Properties/launchSettings.json`.
-- [ ] T005 [P] Configure the UI launch profile for port `5213` and set `ApiBaseUrl` to the API's configured local address in `frontend/RSSFeedReader.UI/Properties/launchSettings.json` and `frontend/RSSFeedReader.UI/wwwroot/appsettings.json`.
-- [ ] T006 Configure CORS to allow only the configured local UI origin in `backend/RSSFeedReader.Api/Program.cs`.
-- [ ] T007 [P] Remove the generated `Home.razor`, `Counter.razor`, and `Weather.razor` pages and update links and landing-page text in `frontend/RSSFeedReader.UI/Pages/` and `frontend/RSSFeedReader.UI/Layout/NavMenu.razor`.
-- [ ] T008 Build the API and cleaned UI projects and verify the template pages are absent before feature-page work using `backend/RSSFeedReader.Api/RSSFeedReader.Api.csproj` and `frontend/RSSFeedReader.UI/RSSFeedReader.UI.csproj`.
+- [X] T004 [P] Configure the API launch profile to bind to the documented loopback address and port `5151` in `backend/RSSFeedReader.Api/Properties/launchSettings.json`.
+- [X] T005 [P] Configure the UI launch profile for port `5213` and set `ApiBaseUrl` to the API's configured local address in `frontend/RSSFeedReader.UI/Properties/launchSettings.json` and `frontend/RSSFeedReader.UI/wwwroot/appsettings.json`.
+- [X] T006 Configure CORS to allow only the configured local UI origin in `backend/RSSFeedReader.Api/Program.cs`.
+- [X] T007 [P] Remove the generated `Home.razor`, `Counter.razor`, and `Weather.razor` pages and remove the template About link; update navigation text in `frontend/RSSFeedReader.UI/Pages/`, `frontend/RSSFeedReader.UI/Layout/NavMenu.razor`, and `frontend/RSSFeedReader.UI/Layout/MainLayout.razor`.
+- [X] T008 Build the API and cleaned UI projects and verify the template pages are absent before feature-page work using `backend/RSSFeedReader.Api/RSSFeedReader.Api.csproj` and `frontend/RSSFeedReader.UI/RSSFeedReader.UI.csproj`.
 
 **Checkpoint**: The projects build, local origins are configured, and the template root-route conflict is removed.
 
@@ -44,19 +44,19 @@
 
 **Goal**: Let the local user add non-empty subscription values and see the ordered list update immediately.
 
-**Independent Test**: Start with an empty list; add five distinct non-empty values and confirm each appears within five seconds without reloading. Confirm duplicates appear as separate rows, blank input adds nothing, non-URL text is displayed without fetching feed content, and restarting both local processes leaves the list empty.
+**Independent Test**: Start with an empty list; add five distinct non-empty values and confirm each appears within five seconds without reloading. Confirm duplicates appear as separate rows, blank input adds nothing, non-URL text is displayed without fetching feed content, browser reload preserves entries while the API runs, restarting both local processes clears the list, and an unavailable API produces an inline error while preserving the retry value.
 
 ### Tests for User Story 1
 
-- [ ] T009 [US1] Add API integration tests for the `GET` and `POST /api/subscriptions` contract, including an initially empty list, trimming and blank rejection, acceptance of non-URL text, duplicate entries in insertion order, and empty state after a fresh API process, in `backend/RSSFeedReader.Api.Tests/SubscriptionsApiTests.cs`.
+- [X] T009 [US1] Add API integration tests for the `GET` and `POST /api/subscriptions` contract, including an initially empty list, trimming and blank rejection, acceptance of non-URL text, duplicate entries in insertion order, and empty state after a fresh API process, in `backend/RSSFeedReader.Api.Tests/SubscriptionsApiTests.cs`.
 
 ### Implementation for User Story 1
 
-- [ ] T010 [P] [US1] Define the `Subscription` model in `backend/RSSFeedReader.Api/Subscriptions/Subscription.cs`; follow the canonical `Subscription.url` field definition in [data-model.md](./data-model.md#subscription).
-- [ ] T011 [US1] Implement the insertion-ordered, thread-safe in-memory store in `backend/RSSFeedReader.Api/Subscriptions/SubscriptionStore.cs`; apply the canonical `Subscription.url` constraints in [data-model.md](./data-model.md#subscription), preserve duplicates, and keep state process-local.
-- [ ] T012 [US1] Implement `GET /api/subscriptions` and `POST /api/subscriptions` in `backend/RSSFeedReader.Api/Program.cs` to match [subscriptions-api.md](./contracts/subscriptions-api.md), return a clear `400` problem response for blank values, and return the added item on success.
-- [ ] T013 [P] [US1] Implement the configured-`HttpClient` API client for loading and adding subscriptions in `frontend/RSSFeedReader.UI/Services/SubscriptionsApiClient.cs`; use the request and response shapes in [subscriptions-api.md](./contracts/subscriptions-api.md) and surface request failures to callers.
-- [ ] T014 [US1] Implement the root subscription page in `frontend/RSSFeedReader.UI/Pages/Subscriptions.razor` with a labeled input, keyboard-submittable Add action, empty/list states, accessible status and error feedback, blank-input suppression, and encoded plain-text URL display; clear input after success and retain it after failure.
+- [X] T010 [P] [US1] Define the `Subscription` model in `backend/RSSFeedReader.Api/Subscriptions/Subscription.cs`; follow the canonical `Subscription.url` field definition in [data-model.md](./data-model.md#subscription).
+- [X] T011 [US1] Implement the insertion-ordered, thread-safe in-memory store in `backend/RSSFeedReader.Api/Subscriptions/SubscriptionStore.cs`; apply the canonical `Subscription.url` constraints in [data-model.md](./data-model.md#subscription), preserve duplicates, and keep state process-local.
+- [X] T012 [US1] Implement `GET /api/subscriptions` and `POST /api/subscriptions` in `backend/RSSFeedReader.Api/Program.cs` to match [subscriptions-api.md](./contracts/subscriptions-api.md), return a clear `400` problem response for blank values, and return the added item on success.
+- [X] T013 [P] [US1] Implement the configured-`HttpClient` API client for loading and adding subscriptions in `frontend/RSSFeedReader.UI/Services/SubscriptionsApiClient.cs`; use the request and response shapes in [subscriptions-api.md](./contracts/subscriptions-api.md) and surface request failures to callers.
+- [X] T014 [US1] Implement the root subscription page in `frontend/RSSFeedReader.UI/Pages/Subscriptions.razor` with a labeled input, keyboard-submittable Add action, empty/list states, accessible status and error feedback, blank-input suppression, and encoded plain-text URL display; clear input after success and retain it after failure.
 
 **Checkpoint**: User Story 1 works independently through the UI and API and satisfies the scenarios in `spec.md`.
 
@@ -66,7 +66,7 @@
 
 **Purpose**: Verify the integrated MVP and its security and restart boundaries.
 
-- [ ] T015 Run the API tests and every acceptance scenario in `specs/001-rss-subscription-list/quickstart.md`; resolve failures in the affected API, UI, or test files before marking the MVP complete.
+- [X] T015 Run the API tests and every acceptance scenario in `specs/001-rss-subscription-list/quickstart.md`; resolve failures in the affected API, UI, or test files before marking the MVP complete.
 
 ---
 

@@ -44,13 +44,15 @@ Open the UI URL printed by the frontend process. The API should listen on
 2. Enter `https://example.com/feed.xml` and choose **Add**. Confirm the value appears
    within 5 seconds without reloading the page.
 3. Add the same value again. Confirm two entries appear in insertion order.
-4. Submit blank or whitespace-only input. Confirm no entry is added and no blank item
+4. Reload the browser page while leaving the API running. Confirm both entries remain
+   visible.
+5. Submit blank or whitespace-only input. Confirm no entry is added and no blank item
    appears.
-5. Submit non-empty text such as `not a feed URL`. Confirm it appears as text and that no
+6. Submit non-empty text such as `not a feed URL`. Confirm it appears as text and that no
    feed content is fetched or displayed.
-6. Stop both local processes, start them again, and confirm the list is empty.
-7. Force an API request failure during a UI add. Confirm an inline error is shown and the
-   entered text remains available for retry.
+7. Stop both local processes, start them again, and confirm the list is empty.
+8. Stop the API while leaving the UI running. Submit a non-empty value and confirm an
+   inline error appears while the entered text remains available for retry.
 
 The acceptance URLs are display values only; these scenarios do not require any outbound
 feed request.

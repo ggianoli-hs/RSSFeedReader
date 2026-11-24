@@ -1,0 +1,127 @@
+@page "/"
+@using System.Net.Http
+@using System.Text.Json
+@using RSSFeedReader.UI.Services
+@inject SubscriptionsApiClient SubscriptionsApi
+
+<PageTitle>Subscriptions - RSS Feed Reader</PageTitle>
+
+<h1>Subscriptions</h1>
+
+@if (_isLoading)
+{
+    <p role="status">Loading subscriptions...</p>
+}
+else if (_loadError is not null)
+{
+    <p role="alert">@_loadError</p>
+    <button class="btn btn-primary" type="button" @onclick="LoadSubscriptionsAsync">Try again</button>
+}
+else
+{
+    <form @onsubmit="AddSubscriptionAsync" @onsubmit:preventDefault="true">
+        <div class="mb-3">
+            <label class="form-label" for="subscription-url">Feed URL</label>
+            <input @ref="_urlInput"
+                   @bind="_url"
+                   @bind:event="oninput"
+                   class="form-control"
+                   disabled="@_isSubmitting"
+                   id="subscription-url"
+                   autocomplete="url" />
+        </div>
+        <button class="btn btn-primary" type="submit" disabled="@_isSubmitting">
+            @(_isSubmitting ? "Adding..." : "Add")
+        </button>
+    </form>
+
+    @if (_errorMessage is not null)
+    {
+        <p role="alert">@_errorMessage</p>
+    }
+
+    @if (_statusMessage is not null)
+    {
+        <p role="status" aria-live="polite">@_statusMessage</p>
+    }
+
+    @if (_subscriptions.Count == 0)
+    {
+        <p>No subscriptions yet.</p>
+    }
+    else
+    {
+        <ul aria-label="Subscriptions">
+            @foreach (var subscription in _subscriptions)
+            {
+                <li>@subscription.Url</li>
+            }
+        </ul>
+    }
+}
+
+@code {
+    private readonly List<SubscriptionDto> _subscriptions = [];
+    private ElementReference _urlInput;
+    private string _url = string.Empty;
+    private string? _loadError;
+    private string? _errorMessage;
+    private string? _statusMessage;
+    private bool _isLoading = true;
+    private bool _isSubmitting;
+
+    protected override Task OnInitializedAsync() => LoadSubscriptionsAsync();
+
+    private async Task LoadSubscriptionsAsync()
+    {
+        _isLoading = true;
+        _loadError = null;
+
+        try
+        {
+            var subscriptions = await SubscriptionsApi.GetAllAsync();
+            _subscriptions.Clear();
+            _subscriptions.AddRange(subscriptions);
+        }
+        catch (Exception exception) when (
+            exception is HttpRequestException or JsonException or InvalidDataException)
+        {
+            _loadError = "Couldn't load subscriptions. Check that the local service is running, then try again.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task AddSubscriptionAsync()
+    {
+        _errorMessage = null;
+        _statusMessage = null;
+
+        var url = _url.Trim();
+        if (url.Length == 0 || _isSubmitting)
+        {
+            return;
+        }
+
+        _isSubmitting = true;
+        try
+        {
+            var subscription = await SubscriptionsApi.AddAsync(url);
+            _subscriptions.Add(subscription);
+            _url = string.Empty;
+            _statusMessage = "Subscription added.";
+            await _urlInput.FocusAsync();
+        }
+        catch (Exception exception) when (
+            exception is HttpRequestException or JsonException or InvalidDataException)
+        {
+            _errorMessage = "Couldn't add the subscription. Check that the local service is running and try again.";
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+}
